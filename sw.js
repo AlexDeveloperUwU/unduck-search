@@ -11,10 +11,8 @@ const urlsToCache = [
 ];
 
 self.addEventListener("install", (event) => {
-  console.log("Service Worker: Install event");
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log("Caching files during install...");
       return cache.addAll(urlsToCache.filter((url) => !url.startsWith("chrome-extension://")));
     })
   );
@@ -26,16 +24,12 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  console.log("Fetch event for:", event.request.url);
-
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
-        console.log("Cache hit for:", event.request.url);
         return cachedResponse;
       }
 
-      console.log("Cache miss for:", event.request.url, "Fetching from network...");
       return fetch(event.request)
         .then((networkResponse) => {
           if (event.request.method === "GET" && networkResponse && networkResponse.ok) {
@@ -51,7 +45,6 @@ self.addEventListener("fetch", (event) => {
         .catch((error) => {
           console.error("Fetch failed for:", event.request.url, "Error:", error);
           if (event.request.destination === "document") {
-            console.log("Returning fallback index.html for:", event.request.url);
             return caches.match("/index.html");
           }
         });
@@ -60,14 +53,12 @@ self.addEventListener("fetch", (event) => {
 });
 
 self.addEventListener("activate", (event) => {
-  console.log("Service Worker: Activate event");
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (!cacheWhitelist.includes(cacheName)) {
-            console.log("Deleting old cache:", cacheName);
             return caches.delete(cacheName);
           }
         })
