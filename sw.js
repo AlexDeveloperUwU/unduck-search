@@ -4,6 +4,8 @@ const urlsToCache = [
   '/index.html',
   'https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap',
   '/3.4.16.js',
+  '/light.png',
+  '/dark.png'
 ];
 
 self.addEventListener('install', (event) => {
