@@ -23,7 +23,12 @@ self.addEventListener('fetch', (event) => {
         cachedResponse ||
         fetch(event.request)
           .then((networkResponse) => {
-            if (event.request.method === 'GET' && networkResponse && networkResponse.ok) {
+            if (
+              event.request.method === 'GET' &&
+              networkResponse &&
+              networkResponse.ok &&
+              event.request.url.startsWith('http')
+            ) {
               const responseClone = networkResponse.clone();
               caches.open(CACHE_NAME).then((cache) => {
                 cache.put(event.request, responseClone).catch((error) => {
