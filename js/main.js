@@ -1,5 +1,5 @@
 const themeToggle = document.getElementById("themeToggle");
-const html = document.documentElement;
+const html = document.getElementById("htmlElement");
 const searchForm = document.getElementById("searchForm");
 const searchInput = document.getElementById("searchInput");
 const clearButton = document.getElementById("clearButton");
@@ -16,11 +16,18 @@ function updateThemeButton() {
 
 themeToggle.addEventListener("click", () => {
   html.classList.toggle("dark");
-  localStorage.setItem("darkMode", html.classList.contains("dark"));
+  localStorage.setItem("darkMode", html.classList.contains("dark") ? "true" : "false");
   updateThemeButton();
 });
 
-updateThemeButton();
+document.addEventListener("DOMContentLoaded", () => {
+  if (localStorage.getItem("darkMode") === "true") {
+    html.classList.add("dark");
+  } else {
+    html.classList.remove("dark");
+  }
+  updateThemeButton();
+});
 
 function autoResize() {
   searchInput.style.height = "auto";
@@ -29,7 +36,6 @@ function autoResize() {
   clearButton.style.display = searchInput.value ? "flex" : "none";
 }
 
-searchInput.style.height = "58px";
 searchInput.addEventListener("input", autoResize);
 
 clearButton.addEventListener("click", () => {

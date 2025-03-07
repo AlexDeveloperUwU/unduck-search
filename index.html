@@ -1,11 +1,23 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" id="htmlElement" class="dark">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unduck Search</title>
   <script src="./js/3.4.16.js"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {}
+      }
+    };
+
+    if (localStorage.getItem('darkMode') === 'false') {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
   <link rel="icon" href="./img/light.png" media="(prefers-color-scheme: light)">
   <link rel="icon" href="./img/dark.png" media="(prefers-color-scheme: dark)">
   <link rel="stylesheet" href="./css/styles.css">
