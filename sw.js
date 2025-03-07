@@ -57,7 +57,8 @@ self.addEventListener('fetch', (event) => {
           if (
             event.request.method === 'GET' &&
             networkResponse &&
-            networkResponse.ok
+            networkResponse.ok &&
+            event.request.url.startsWith('http')
           ) {
             const responseClone = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => {
