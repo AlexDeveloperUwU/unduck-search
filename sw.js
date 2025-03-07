@@ -17,36 +17,62 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return (
-        cachedResponse ||
-        fetch(event.request)
-          .then((networkResponse) => {
-            if (
-              event.request.method === 'GET' &&
-              networkResponse &&
-              networkResponse.ok &&
-              event.request.url.startsWith('http')
-            ) {
-              const responseClone = networkResponse.clone();
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(event.request, responseClone).catch((error) => {
-                  console.error('Failed to cache response:', error);
+  const url = new URL(event.request.url);
+
+  if (url.origin === location.origin) {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        return (
+          cachedResponse ||
+          fetch(event.request)
+            .then((networkResponse) => {
+              if (
+                event.request.method === 'GET' &&
+                networkResponse &&
+                networkResponse.ok &&
+                event.request.url.startsWith('http')
+              ) {
+                const responseClone = networkResponse.clone();
+                caches.open(CACHE_NAME).then((cache) => {
+                  cache.put(event.request, responseClone).catch((error) => {
+                    console.error('Failed to cache response:', error);
+                  });
                 });
+              }
+              return networkResponse;
+            })
+            .catch((error) => {
+              console.error('Fetch failed:', error);
+              if (event.request.destination === 'document') {
+                return caches.match('/index.html');
+              }
+            })
+        );
+      })
+    );
+  } else {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (
+            event.request.method === 'GET' &&
+            networkResponse &&
+            networkResponse.ok
+          ) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(event.request, responseClone).catch((error) => {
+                console.error('Failed to cache response:', error);
               });
-            }
-            return networkResponse;
-          })
-          .catch((error) => {
-            console.error('Fetch failed:', error);
-            if (event.request.destination === 'document') {
-              return caches.match('/index.html');
-            }
-          })
-      );
-    })
-  );
+            });
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match(event.request);
+        })
+    );
+  }
 });
 
 self.addEventListener('activate', (event) => {
@@ -63,16 +89,4 @@ self.addEventListener('activate', (event) => {
     })
   );
   self.clients.claim(); 
-});
-
-self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-
-  if (url.origin !== location.origin) {
-    event.respondWith(
-      fetch(event.request).catch(() => {
-        return caches.match(event.request);
-      })
-    );
-  }
 });
