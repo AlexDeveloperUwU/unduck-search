@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unduck Search</title>
+  <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {}
+      }
+    };
+
+    if (localStorage.getItem('darkMode') === 'false') {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Comfortaa', sans-serif;
+      transition: background-color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .search-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #searchInput {
+      caret-color: #1D4ED8;
+    }
+
+    @keyframes blink {
+      50% {
+        caret-color: transparent;
+      }
+    }
+  </style>
+</head>
+
+<body class="dark:bg-gray-900 dark:text-white">
+  <div class="absolute top-6 right-6">
+    <button id="themeToggle" class="p-2">
+      <svg id="moonIcon" class="hidden dark:block w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+      <svg id="sunIcon" class="block dark:hidden w-8 h-8 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+      </svg>
+    </button>
+  </div>
+
+  <div class="search-container px-6">
+    <div class="w-full max-w-2xl mx-auto flex flex-col items-center gap-8">
+      <h1 class="text-5xl font-bold text-center">Unduck Search</h1>
+
+      <form id="searchForm" class="w-full">
+        <div class="relative w-full">
+          <input type="text" id="searchInput" placeholder="Search the web..." class="w-full h-16 pl-6 pr-12 text-lg rounded-full border dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white" autofocus autocomplete="off">
+          <button type="submit" class="absolute right-2 top-2 rounded-full h-12 w-12 flex items-center justify-center bg-blue-500 text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="py-6 text-center text-lg dark:text-gray-400">
+    Made by <a href="https://alexdevuwu.com">AlexDevUwU</a> • Powered by Unduck.link • <a href="https://duckduckgo.com/bangs"><u> Supported bangs</u></a>
+  </footer>
+
+  <script>
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+  
+    function updateThemeButton() {
+      if (html.classList.contains('dark')) {
+        document.getElementById('moonIcon').classList.remove('hidden');
+        document.getElementById('sunIcon').classList.add('hidden');
+      } else {
+        document.getElementById('moonIcon').classList.add('hidden');
+        document.getElementById('sunIcon').classList.remove('hidden');
+      }
+    }
+  
+    themeToggle.addEventListener('click', () => {
+      html.classList.toggle('dark');
+      localStorage.setItem('darkMode', html.classList.contains('dark'));
+      updateThemeButton();
+    });
+  
+    updateThemeButton();
+  
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').then(reg => {
+        console.log('Service Worker registered:', reg);
+      }).catch(err => {
+        console.error('Service Worker registration failed:', err);
+      });
+    }
+  
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
+  
+    searchForm.addEventListener('submit', (e) => {
+      e.preventDefault(); 
+      const query = encodeURIComponent(searchInput.value.trim());
+      if (query) {
+        window.location.href = `https://unduck.link?q=${query}`; 
+      }
+    });
+  </script>
+  
+</body>
+
+</html>
