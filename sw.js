@@ -23,15 +23,18 @@ self.addEventListener('fetch', (event) => {
         cachedResponse ||
         fetch(event.request)
           .then((networkResponse) => {
-            if (event.request.method === 'GET' && networkResponse.ok) {
+            if (event.request.method === 'GET' && networkResponse && networkResponse.ok) {
               const responseClone = networkResponse.clone();
               caches.open(CACHE_NAME).then((cache) => {
-                cache.put(event.request, responseClone);
+                cache.put(event.request, responseClone).catch((error) => {
+                  console.error('Failed to cache response:', error);
+                });
               });
             }
             return networkResponse;
           })
-          .catch(() => {
+          .catch((error) => {
+            console.error('Fetch failed:', error);
             if (event.request.destination === 'document') {
               return caches.match('/index.html');
             }
