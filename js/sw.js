@@ -1,75 +1,53 @@
-const CACHE_NAME = 'unduck-cache-v1';
+const CACHE_NAME = "unduck-cache-v1";
 const urlsToCache = [
-  '/',
-  '/index.html',
-  'https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap',
-  '/3.4.16.js',
-  '/light.png',
-  '/dark.png'
+  "/",
+  "/index.html",
+  "/js/3.4.16.js",
+  "/js/sw.js",
+  "/img/light.png",
+  "/img/dark.png",
+  "https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap",
 ];
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
-  );
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache)));
   self.skipWaiting();
 });
 
-self.addEventListener('fetch', (event) => {
-  const url = new URL(event.request.url);
-
-  if (url.origin === location.origin) {
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        return (
-          cachedResponse ||
-          fetch(event.request).then((networkResponse) => {
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      return (
+        cachedResponse ||
+        fetch(event.request)
+          .then((networkResponse) => {
             if (
-              event.request.method === 'GET' &&
+              event.request.method === "GET" &&
               networkResponse &&
               networkResponse.ok &&
-              event.request.url.startsWith('http')
+              event.request.url.startsWith("http")
             ) {
               const responseClone = networkResponse.clone();
               caches.open(CACHE_NAME).then((cache) => {
                 cache.put(event.request, responseClone).catch((error) => {
-                  console.error('Failed to cache response:', error);
+                  console.error("Failed to cache response:", error);
                 });
               });
             }
             return networkResponse;
-          }).catch((error) => {
-            console.error('Fetch failed:', error);
-            if (event.request.destination === 'document') {
-              return caches.match('/index.html');
+          })
+          .catch((error) => {
+            console.error("Fetch failed:", error);
+            if (event.request.destination === "document") {
+              return caches.match("/index.html");
             }
           })
-        );
-      })
-    );
-  } else {
-    event.respondWith(
-      fetch(event.request).then((networkResponse) => {
-        if (
-          event.request.method === 'GET' &&
-          networkResponse &&
-          networkResponse.ok &&
-          event.request.url.startsWith('http')
-        ) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone).catch((error) => {
-              console.error('Failed to cache response:', error);
-            });
-          });
-        }
-        return networkResponse;
-      }).catch(() => caches.match(event.request))
-    );
-  }
+      );
+    })
+  );
 });
 
-self.addEventListener('activate', (event) => {
+self.addEventListener("activate", (event) => {
   const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then((cacheNames) => {
