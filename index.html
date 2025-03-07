@@ -1,134 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unduck Search</title>
   <script src="./js/3.4.16.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
   <link rel="icon" href="./img/light.png" media="(prefers-color-scheme: light)">
   <link rel="icon" href="./img/dark.png" media="(prefers-color-scheme: dark)">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {}
-      }
-    };
-
-    if (localStorage.getItem('darkMode') === 'false') {
-      document.documentElement.classList.remove('dark');
-    }
-  </script>
-  <style>
-    body {
-      font-family: 'Comfortaa', sans-serif;
-      transition: background-color 0.3s ease;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .search-container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .search-box {
-      position: relative;
-      max-width: 584px;
-      width: 100%;
-      margin: 0 auto;
-    }
-
-    .search-input {
-      width: 100%;
-      min-height: 56px;
-      max-height: 200px;
-      background: transparent;
-      border: 1px solid #dfe1e5;
-      border-radius: 24px;
-      padding: 18px 80px 18px 20px;
-      font-size: 16px;
-      color: inherit;
-      outline: none;
-      transition: all 0.3s;
-      resize: none;
-      overflow-y: auto;
-      line-height: 22px;
-    }
-
-    .dark .search-input {
-      border-color: #5f6368;
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .search-input:hover, .search-input:focus {
-      box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
-      border-color: rgba(223, 225, 229, 0);
-    }
-
-    .dark .search-input:hover, .dark .search-input:focus {
-      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.4);
-    }
-
-    .search-input::-webkit-scrollbar {
-      width: 0px;
-    }
-
-    .search-icon, .clear-button {
-      position: absolute;
-      top: 16px;
-      background: none;
-      border: none;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-    }
-
-    .search-icon {
-      right: 16px;
-      color: #4285f4;
-      cursor: pointer;
-    }
-
-    .clear-button {
-      right: 50px;
-      color: #70757a;
-      cursor: pointer;
-      display: none;
-    }
-
-    .dark .clear-button {
-      color: #9aa0a6;
-    }
-
-    .theme-toggle {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 8px;
-      border-radius: 50%;
-      transition: background-color 0.2s;
-    }
-
-    .theme-toggle:hover {
-      background-color: rgba(0, 0, 0, 0.05);
-    }
-
-    .dark .theme-toggle:hover {
-      background-color: rgba(255, 255, 255, 0.05);
-    }
-  </style>
+  <link rel="stylesheet" href="./css/styles.css">
 </head>
+
 <body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-white">
   <button id="themeToggle" class="theme-toggle">
     <svg id="moonIcon" class="hidden dark:block w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -144,31 +26,15 @@
       <h1 class="text-5xl font-bold text-center">Unduck Search</h1>
       <form id="searchForm" class="w-full">
         <div class="search-box">
-          <textarea 
-            id="searchInput" 
-            class="search-input" 
-            placeholder="Search the web..." 
-            autocomplete="off" 
-            autofocus
-            rows="1"
-          ></textarea>
-          <button 
-            type="button" 
-            id="clearButton" 
-            class="clear-button" 
-            aria-label="Clear search text"
-          >
+          <textarea id="searchInput" class="search-input" placeholder="Search the web..." autocomplete="off" autofocus rows="1"></textarea>
+          <button type="button" id="clearButton" class="clear-button" aria-label="Clear search text">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor"/>
+              <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="currentColor" />
             </svg>
           </button>
-          <button 
-            type="submit" 
-            class="search-icon" 
-            aria-label="Search"
-          >
+          <button type="submit" class="search-icon" aria-label="Search">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z" fill="currentColor"/>
+              <path d="M15.5 14H14.71L14.43 13.73C15.41 12.59 16 11.11 16 9.5C16 5.91 13.09 3 9.5 3C5.91 3 3 5.91 3 9.5C3 13.09 5.91 16 9.5 16C11.11 16 12.59 15.41 13.73 14.43L14 14.71V15.5L19 20.49L20.49 19L15.5 14ZM9.5 14C7.01 14 5 11.99 5 9.5C5 7.01 7.01 5 9.5 5C11.99 5 14 7.01 14 9.5C14 11.99 11.99 14 9.5 14Z" fill="currentColor" />
             </svg>
           </button>
         </div>
@@ -179,70 +45,19 @@
   <footer class="py-6 text-center text-sm text-gray-600 dark:text-gray-400">
     Made by <a href="https://alexdevuwu.com" class="hover:underline">AlexDevUwU</a> • Powered by <a href="https://github.com/t3dotgg/unduck" class="hover:underline">unduck.link</a> • <a href="https://duckduckgo.com/bangs" class="hover:underline">Supported bangs</a>
   </footer>
-
+  <script src="./js/main.js"></script>
   <script>
-    const themeToggle = document.getElementById('themeToggle');
-    const html = document.documentElement;
-    const searchForm = document.getElementById('searchForm');
-    const searchInput = document.getElementById('searchInput');
-    const clearButton = document.getElementById('clearButton');
-    
-    function updateThemeButton() {
-      if (html.classList.contains('dark')) {
-        document.getElementById('moonIcon').classList.remove('hidden');
-        document.getElementById('sunIcon').classList.add('hidden');
-      } else {
-        document.getElementById('moonIcon').classList.add('hidden');
-        document.getElementById('sunIcon').classList.remove('hidden');
-      }
-    }
-  
-    themeToggle.addEventListener('click', () => {
-      html.classList.toggle('dark');
-      localStorage.setItem('darkMode', html.classList.contains('dark'));
-      updateThemeButton();
-    });
-  
-    updateThemeButton();
-    
-    function autoResize() {
-      searchInput.style.height = 'auto';
-      const newHeight = Math.max(58, Math.min(searchInput.scrollHeight, 200));
-      searchInput.style.height = newHeight + 'px';
-      clearButton.style.display = searchInput.value ? 'flex' : 'none';
-    }
-    
-    searchInput.style.height = '58px';
-    searchInput.addEventListener('input', autoResize);
-    
-    clearButton.addEventListener('click', () => {
-      searchInput.value = '';
-      searchInput.style.height = '58px';
-      clearButton.style.display = 'none';
-      searchInput.focus();
-    });
-    
-    searchInput.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        searchForm.dispatchEvent(new Event('submit'));
-      }
-    });
-  
-    searchForm.addEventListener('submit', (e) => {
-      e.preventDefault(); 
-      const query = searchInput.value.trim();
-      if (query) {
-        searchForm.reset();
-        window.location.href = `https://unduck.link?q=${encodeURIComponent(query)}`; 
-      }
-    });
-    
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./js/sw.js').catch(err => {
-        console.error('Service Worker registration failed:', err);
-      });
+      navigator.serviceWorker
+        .register('sw.js')
+        .then((registration) => {
+          console.log('Service Worker registered with scope:', registration.scope);
+        })
+        .catch((error) => {
+          console.error('Service Worker registration failed:', error);
+        });
     }
   </script>
 </body>
+
 </html>
