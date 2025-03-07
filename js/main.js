@@ -21,7 +21,8 @@ themeToggle.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (localStorage.getItem("darkMode") === "true") {
+  const darkMode = localStorage.getItem("darkMode");
+  if (darkMode === "true") {
     html.classList.add("dark");
   } else {
     html.classList.remove("dark");
