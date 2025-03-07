@@ -21,12 +21,19 @@ themeToggle.addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const darkMode = localStorage.getItem("darkMode");
+  let darkMode = localStorage.getItem("darkMode");
+
+  if (darkMode === null) {
+    localStorage.setItem("darkMode", "true");
+    darkMode = "true";
+  }
+
   if (darkMode === "true") {
     html.classList.add("dark");
   } else {
     html.classList.remove("dark");
   }
+
   updateThemeButton();
 });
 
