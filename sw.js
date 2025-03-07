@@ -3,7 +3,7 @@ const urlsToCache = [
   '/',
   '/index.html',
   'https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap',
-  'https://cdn.tailwindcss.com/3.4.16',
+  '/3.4.16.js',
 ];
 
 // Instalar el SW y almacenar los assets en caché
