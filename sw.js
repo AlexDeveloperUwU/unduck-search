@@ -6,14 +6,11 @@ const urlsToCache = [
   '/3.4.16.js',
 ];
 
-// Instalar el SW y almacenar los assets en caché
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    })
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(urlsToCache))
   );
-  self.skipWaiting(); 
+  self.skipWaiting();
 });
 
 self.addEventListener('fetch', (event) => {
@@ -24,54 +21,48 @@ self.addEventListener('fetch', (event) => {
       caches.match(event.request).then((cachedResponse) => {
         return (
           cachedResponse ||
-          fetch(event.request)
-            .then((networkResponse) => {
-              if (
-                event.request.method === 'GET' &&
-                networkResponse &&
-                networkResponse.ok &&
-                event.request.url.startsWith('http')
-              ) {
-                const responseClone = networkResponse.clone();
-                caches.open(CACHE_NAME).then((cache) => {
-                  cache.put(event.request, responseClone).catch((error) => {
-                    console.error('Failed to cache response:', error);
-                  });
+          fetch(event.request).then((networkResponse) => {
+            if (
+              event.request.method === 'GET' &&
+              networkResponse &&
+              networkResponse.ok &&
+              event.request.url.startsWith('http')
+            ) {
+              const responseClone = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(event.request, responseClone).catch((error) => {
+                  console.error('Failed to cache response:', error);
                 });
-              }
-              return networkResponse;
-            })
-            .catch((error) => {
-              console.error('Fetch failed:', error);
-              if (event.request.destination === 'document') {
-                return caches.match('/index.html');
-              }
-            })
+              });
+            }
+            return networkResponse;
+          }).catch((error) => {
+            console.error('Fetch failed:', error);
+            if (event.request.destination === 'document') {
+              return caches.match('/index.html');
+            }
+          })
         );
       })
     );
   } else {
     event.respondWith(
-      fetch(event.request)
-        .then((networkResponse) => {
-          if (
-            event.request.method === 'GET' &&
-            networkResponse &&
-            networkResponse.ok &&
-            event.request.url.startsWith('http')
-          ) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => {
-              cache.put(event.request, responseClone).catch((error) => {
-                console.error('Failed to cache response:', error);
-              });
+      fetch(event.request).then((networkResponse) => {
+        if (
+          event.request.method === 'GET' &&
+          networkResponse &&
+          networkResponse.ok &&
+          event.request.url.startsWith('http')
+        ) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone).catch((error) => {
+              console.error('Failed to cache response:', error);
             });
-          }
-          return networkResponse;
-        })
-        .catch(() => {
-          return caches.match(event.request);
-        })
+          });
+        }
+        return networkResponse;
+      }).catch(() => caches.match(event.request))
     );
   }
 });
@@ -89,5 +80,5 @@ self.addEventListener('activate', (event) => {
       );
     })
   );
-  self.clients.claim(); 
+  self.clients.claim();
 });
